@@ -2,13 +2,21 @@ trigger:
 - main
 pool:
   vmImage: 'Ubuntu-latest'
-variables:
-  acrserviceconnection: cred-acr
-  tag: '$(Build.BuildId)'
-  frontendrepo: 'credpay/frontend'
-  paymentrepo: 'credpay/payment'
-  userrepo: 'credpay/user'
-stages:
+steps:
+- checkout: self
+- script:
+    echo "repository folder structure"
+    pwd
+    ls -la
+      
+
+# variables:
+#   acrserviceconnection: ACRigestry1
+#   tag: '$(Build.BuildId)'
+#   frontendrepo: 'credpay/frontend'
+#   paymentrepo: 'credpay/payment'
+#   userrepo: 'credpay/user'
+# stages:
   # - stage: DockerBuild
   #   displayName: Build Docker Images
   #   jobs:
@@ -46,40 +54,40 @@ stages:
   #           tags: |
   #             $(tag)
   #             latest
-  - stage: terraform
-    displayName: Terraform Infra
-    jobs:
-      - job: TerraformApply
-        displayName: Terraform Apply
-        steps:
-          - checkout: self
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: 'latest'
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'init'
-              workingDirectory: 'Terraform'
-              backendServiceArm: 'credpayserviceconnection'
-              backendAzureRmResourceGroupName: 'CredPay'
-              backendAzureRmStorageAccountName: 'credpaystorageaccount'
-              backendAzureRmContainerName: 'credpaysacontainer'
-              backendAzureRmKey: 'terraform.tfstate'
-          # - task: TerraformTask@5
-          #   inputs:
-          #     provider: 'azurerm'
-          #     command: 'apply'
-          #     workingDirectory: 'Terraform'
-          #     commandOptions: '--auto-approve'
-          #     environmentServiceNameAzureRM: 'credpayserviceconnection'
-          - task: TerraformTask@5
-            inputs:
-              provider: 'azurerm'
-              command: 'destroy'
-              workingDirectory: 'Terraform'
-              commandOptions: '--auto-approve'
-              environmentServiceNameAzureRM: 'credpayserviceconnection'
+  # - stage: terraform
+  #   displayName: Terraform Infra
+  #   jobs:
+  #     - job: TerraformApply
+  #       displayName: Terraform Apply
+  #       steps:
+  #         - checkout: self
+  #         - task: TerraformInstaller@1
+  #           inputs:
+  #             terraformVersion: 'latest'
+  #         - task: TerraformTask@5
+  #           inputs:
+  #             provider: 'azurerm'
+  #             command: 'init'
+  #             workingDirectory: 'Terraform'
+  #             backendServiceArm: 'credpayserviceconnection'
+  #             backendAzureRmResourceGroupName: 'CredPay'
+  #             backendAzureRmStorageAccountName: 'credpaystorageaccount'
+  #             backendAzureRmContainerName: 'credpaysacontainer'
+  #             backendAzureRmKey: 'terraform.tfstate'
+  #         # - task: TerraformTask@5
+  #         #   inputs:
+  #         #     provider: 'azurerm'
+  #         #     command: 'apply'
+  #         #     workingDirectory: 'Terraform'
+  #         #     commandOptions: '--auto-approve'
+  #         #     environmentServiceNameAzureRM: 'credpayserviceconnection'
+  #         - task: TerraformTask@5
+  #           inputs:
+  #             provider: 'azurerm'
+  #             command: 'destroy'
+  #             workingDirectory: 'Terraform'
+  #             commandOptions: '--auto-approve'
+  #             environmentServiceNameAzureRM: 'credpayserviceconnection'
 
 
 
